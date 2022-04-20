@@ -1,28 +1,28 @@
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The And class represents the mathematical operator Xor.
+ */
 public class Xor extends BinaryExpression {
-
+    /**
+     * Creates a new Xor object.
+     * @param left the expression on the left side of the operator.
+     * @param right the expression on the right side of the operator.
+     */
     public Xor(Expression left, Expression right) {
         super.left = left;
         super.right = right;
     }
 
-    public Expression getLeft() {
-        return left;
-    }
-
-    public Expression getRight() {
-        return right;
-    }
-
     @Override
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
         if (left == null || right == null) {
-            throw new Exception("The left value or the right value is null.");
+            throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
         if (left.evaluate(assignment) == null || right.evaluate(assignment) == null) {
-            throw new Exception("The left evaluation value or the right evaluation value is null.");
+            throw new Exception(
+                    "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
         return ((!left.evaluate(assignment) && right.evaluate(assignment))
                 || (left.evaluate(assignment) && !right.evaluate(assignment)));
@@ -31,24 +31,13 @@ public class Xor extends BinaryExpression {
     @Override
     public Boolean evaluate() throws Exception {
         if (left == null || right == null) {
-            throw new Exception("The left value or the right value is null.");
+            throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
         if (left.evaluate() == null || right.evaluate() == null) {
-            throw new Exception("The left evaluation value or the right evaluation value is null.");
+            throw new Exception(
+                    "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
         return ((!left.evaluate() && right.evaluate()) || (left.evaluate() && !right.evaluate()));
-    }
-
-    @Override
-    public List<String> getVariables() {
-        List<String> leftList = left.getVariables();
-        List<String> rightList = right.getVariables();
-        for (String str : rightList) {
-            if (!leftList.contains(str)){
-                leftList.add(str);
-            }
-        }
-        return leftList;
     }
 
     @Override
@@ -63,23 +52,34 @@ public class Xor extends BinaryExpression {
         return "(" + left.toString() + " ^ " + right.toString() + ")";
     }
 
-
     @Override
     public Expression nandify() {
         return new Nand(
-                new Nand(left.nandify(),
-                        new Nand(left.nandify(), right.nandify())),
-                new Nand(right.nandify(),
-                        new Nand(left.nandify(), right.nandify())));
+                new Nand(
+                        left.nandify(),
+                        new Nand(
+                                left.nandify(),
+                                right.nandify())),
+                new Nand(
+                        right.nandify(),
+                        new Nand(
+                                left.nandify(),
+                                right.nandify())));
     }
 
     @Override
     public Expression norify() {
         return new Nor(
                 new Nor(
-                        new Nor(left.norify(), left.norify()),
-                        new Nor(right.norify(), right.norify())),
-                new Nor(left.norify(), right.norify()));
+                        new Nor(
+                                left.norify(),
+                                left.norify()),
+                        new Nor(
+                                right.norify(),
+                                right.norify())),
+                new Nor(
+                        left.norify(),
+                        right.norify()));
     }
 
     @Override
