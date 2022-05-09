@@ -1,6 +1,9 @@
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Interface for a general logical expression.
+ */
 public interface Expression {
     /**
      * Evaluate the expression using the variable values provided in the assignment, and return the result.

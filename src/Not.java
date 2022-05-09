@@ -1,66 +1,71 @@
-import java.util.List;
 import java.util.Map;
 
+/**
+ * The Not class represents the mathematical operator Not.
+ */
 public class Not extends UnaryExpression {
-
+    /**
+     * Creates a new Not object.
+     * @param itself the expression inside the Not expression.
+     */
     public Not(Expression itself) {
-        super.itself = itself;
+        super.setItself(itself);
     }
 
     @Override
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        if (this.itself == null) {
+        if (this.getItself() == null) {
             throw new Exception("The expression is null, can't evaluate the expression.");
         }
-        if (this.itself.evaluate(assignment) == null) {
+        if (this.getItself().evaluate(assignment) == null) {
             throw new Exception("The expression value is null, can't evaluate the expression.");
         }
-        return !this.itself.evaluate(assignment);
+        return !this.getItself().evaluate(assignment);
     }
 
     @Override
     public Boolean evaluate() throws Exception {
-        if (this.itself == null) {
+        if (this.getItself() == null) {
             throw new Exception("The expression is null, can't evaluate the expression.");
         }
-        if (this.itself.evaluate() == null) {
+        if (this.getItself().evaluate() == null) {
             throw new Exception("The expression value is null, can't evaluate the expression.");
         }
-        return !this.itself.evaluate();
+        return !this.getItself().evaluate();
     }
 
     @Override
     public Expression assign(String var, Expression expression) {
-        return new Not(this.itself.assign(var, expression));
+        return new Not(this.getItself().assign(var, expression));
     }
 
     @Override
     public String toString() {
-        return "~(" + this.itself.toString() + ")";
+        return "~(" + this.getItself().toString() + ")";
     }
 
     @Override
     public Expression nandify() {
         return new Nand(
-                itself.nandify(),
-                itself.nandify());
+                getItself().nandify(),
+                getItself().nandify());
     }
 
     @Override
     public Expression norify() {
         return new Nor(
-                itself.norify(),
-                itself.norify());
+                getItself().norify(),
+                getItself().norify());
     }
 
     @Override
     public Expression simplify() {
-        if (itself.simplify().toString().equals("T")) {
+        if (getItself().simplify().toString().equals("T")) {
             return new Val(false);
         }
-        if (itself.simplify().toString().equals("F")) {
+        if (getItself().simplify().toString().equals("F")) {
             return new Val(true);
         }
-        return new Not(itself.simplify());
+        return new Not(getItself().simplify());
     }
 }

@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,44 +10,44 @@ public class Nor extends BinaryExpression {
      * @param right the expression on the right side of the operator.
      */
     public Nor(Expression left, Expression right) {
-        super.left = left;
-        super.right = right;
+        super.setLeft(left);
+        super.setRight(right);
     }
 
     @Override
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate(assignment) == null || right.evaluate(assignment) == null) {
+        if (getLeft().evaluate(assignment) == null || getRight().evaluate(assignment) == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return !(left.evaluate(assignment) || right.evaluate(assignment));
+        return !(getLeft().evaluate(assignment) || getRight().evaluate(assignment));
     }
 
     @Override
     public Boolean evaluate() throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate() == null || right.evaluate() == null) {
+        if (getLeft().evaluate() == null || getRight().evaluate() == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return !(left.evaluate() || right.evaluate());
+        return !(getLeft().evaluate() || getRight().evaluate());
     }
 
     @Override
     public Expression assign(String var, Expression expression) {
-        Expression eLeft = left.assign(var, expression);
-        Expression eRight = right.assign(var, expression);
+        Expression eLeft = getLeft().assign(var, expression);
+        Expression eRight = getRight().assign(var, expression);
         return new Nor(eLeft, eRight);
     }
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " V " + right.toString() + ")";
+        return "(" + getLeft().toString() + " V " + getRight().toString() + ")";
     }
 
 
@@ -58,42 +57,42 @@ public class Nor extends BinaryExpression {
         return new Nand(
                 new Nand(
                         new Nand(
-                                left.nandify(),
-                                left.nandify()),
+                                getLeft().nandify(),
+                                getLeft().nandify()),
                         new Nand(
-                                right.nandify(),
-                                right.nandify())),
+                                getRight().nandify(),
+                                getRight().nandify())),
                 new Nand(
                         new Nand(
-                                left.nandify(),
-                                left.nandify()),
+                                getLeft().nandify(),
+                                getLeft().nandify()),
                         new Nand(
-                                right.nandify(),
-                                right.nandify())));
+                                getRight().nandify(),
+                                getRight().nandify())));
     }
 
     @Override
     public Expression norify() {
-        return new Nor(left.norify(), right.norify());
+        return new Nor(getLeft().norify(), getRight().norify());
     }
 
     @Override
     public Expression simplify() {
-        if (left.simplify().toString().equals("T") || right.simplify().toString().equals("T")) {
+        if (getLeft().simplify().toString().equals("T") || getRight().simplify().toString().equals("T")) {
             return new Val(false);
         }
-        if (left.simplify().toString().equals("F") && right.simplify().toString().equals("F")) {
+        if (getLeft().simplify().toString().equals("F") && getRight().simplify().toString().equals("F")) {
             return new Val(true);
         }
-        if (left.simplify().toString().equals("F")) {
-            return new Not(right.simplify());
+        if (getLeft().simplify().toString().equals("F")) {
+            return new Not(getRight().simplify()).simplify();
         }
-        if (right.simplify().toString().equals("F")) {
-            return new Not(left.simplify());
+        if (getRight().simplify().toString().equals("F")) {
+            return new Not(getLeft().simplify()).simplify();
         }
-        if (left.simplify().toString().equals((right.simplify().toString()))) {
-            return new Not(left.simplify());
+        if (getLeft().simplify().toString().equals((getRight().simplify().toString()))) {
+            return new Not(getLeft().simplify()).simplify();
         }
-        return new Nor(left.simplify(), right.simplify());
+        return new Nor(getLeft().simplify(), getRight().simplify());
     }
 }

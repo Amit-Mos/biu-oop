@@ -10,45 +10,45 @@ public class Xnor extends BinaryExpression {
      * @param right the expression on the right side of the operator.
      */
     public Xnor(Expression left, Expression right) {
-        super.left = left;
-        super.right = right;
+        super.setLeft(left);
+        super.setRight(right);
     }
 
     @Override
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate(assignment) == null || right.evaluate(assignment) == null) {
+        if (getLeft().evaluate(assignment) == null || getRight().evaluate(assignment) == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return !((!left.evaluate(assignment) && right.evaluate(assignment))
-                || (left.evaluate(assignment) && !right.evaluate(assignment)));
+        return !((!getLeft().evaluate(assignment) && getRight().evaluate(assignment))
+                || (getLeft().evaluate(assignment) && !getRight().evaluate(assignment)));
     }
 
     @Override
     public Boolean evaluate() throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate() == null || right.evaluate() == null) {
+        if (getLeft().evaluate() == null || getRight().evaluate() == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return !((!left.evaluate() && right.evaluate()) || (left.evaluate() && !right.evaluate()));
+        return !((!getLeft().evaluate() && getRight().evaluate()) || (getLeft().evaluate() && !getRight().evaluate()));
     }
 
     @Override
     public Expression assign(String var, Expression expression) {
-        Expression eLeft = left.assign(var, expression);
-        Expression eRight = right.assign(var, expression);
+        Expression eLeft = getLeft().assign(var, expression);
+        Expression eRight = getRight().assign(var, expression);
         return new Xnor(eLeft, eRight);
     }
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " # " + right.toString() + ")";
+        return "(" + getLeft().toString() + " # " + getRight().toString() + ")";
     }
 
 
@@ -57,40 +57,40 @@ public class Xnor extends BinaryExpression {
         return new Nand(
                 new Nand(
                         new Nand(
-                                left.nandify(),
-                                left.nandify()),
+                                getLeft().nandify(),
+                                getLeft().nandify()),
                         new Nand(
-                                right.nandify(),
-                                right.nandify())),
+                                getRight().nandify(),
+                                getRight().nandify())),
                 new Nand(
-                        left.nandify(),
-                        right.nandify()));
+                        getLeft().nandify(),
+                        getRight().nandify()));
     }
 
     @Override
     public Expression norify() {
         return new Nor(
                 new Nor(
-                        left.norify(),
+                        getLeft().norify(),
                         new Nor(
-                                left.norify(),
-                                right.norify())),
+                                getLeft().norify(),
+                                getRight().norify())),
                 new Nor(
-                        right.norify(),
+                        getRight().norify(),
                         new Nor(
-                                left.norify(),
-                                right.norify())));
+                                getLeft().norify(),
+                                getRight().norify())));
     }
 
     @Override
     public Expression simplify() {
-        if ((left.simplify().toString().equals("F") && right.simplify().toString().equals("T"))
-        || (left.simplify().toString().equals("T") && right.simplify().toString().equals("F"))) {
+        if ((getLeft().simplify().toString().equals("F") && getRight().simplify().toString().equals("T"))
+        || (getLeft().simplify().toString().equals("T") && getRight().simplify().toString().equals("F"))) {
             return new Val(false);
         }
-        if (left.simplify().toString().equals((right.simplify().toString()))) {
+        if (getLeft().simplify().toString().equals((getRight().simplify().toString()))) {
             return new Val(true);
         }
-        return new Xnor(left.simplify(), right.simplify());
+        return new Xnor(getLeft().simplify(), getRight().simplify());
     }
 }

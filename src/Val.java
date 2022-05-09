@@ -48,6 +48,7 @@ public class Val implements Expression {
         }
         return "F";
     }
+    @Override
     public Expression nandify() {
         return new Val(this.value);
     }

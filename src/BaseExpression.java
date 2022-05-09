@@ -1,6 +1,9 @@
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A class for a general unary Expression.
+ */
 public abstract class BaseExpression implements Expression {
 
     @Override

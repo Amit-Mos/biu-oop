@@ -51,7 +51,7 @@ public class Var implements Expression {
     public String toString() {
         return this.key;
     }
-
+    @Override
     public Expression nandify() {
         return new Var(this.key);
     }

@@ -10,82 +10,82 @@ public class Or extends BinaryExpression {
      * @param right the expression on the right side of the operator.
      */
     public Or(Expression left, Expression right) {
-        super.left = left;
-        super.right = right;
+        super.setLeft(left);
+        super.setRight(right);
     }
 
     @Override
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate(assignment) == null || right.evaluate(assignment) == null) {
+        if (getLeft().evaluate(assignment) == null || getRight().evaluate(assignment) == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return left.evaluate(assignment) || right.evaluate(assignment);
+        return getLeft().evaluate(assignment) || getRight().evaluate(assignment);
     }
 
     @Override
     public Boolean evaluate() throws Exception {
-        if (left == null || right == null) {
+        if (getLeft() == null || getRight() == null) {
             throw new Exception("The left expression or the right expression is null, can't evaluate the expression.");
         }
-        if (left.evaluate() == null || right.evaluate() == null) {
+        if (getLeft().evaluate() == null || getRight().evaluate() == null) {
             throw new Exception(
                     "The left expression value or the right expression value is null, can't evaluate the expression.");
         }
-        return left.evaluate() || right.evaluate();
+        return getLeft().evaluate() || getRight().evaluate();
     }
 
     @Override
     public Expression assign(String var, Expression expression) {
-        Expression eLeft = left.assign(var, expression);
-        Expression eRight = right.assign(var, expression);
+        Expression eLeft = getLeft().assign(var, expression);
+        Expression eRight = getRight().assign(var, expression);
         return new Or(eLeft, eRight);
     }
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " | " + right.toString() + ")";
+        return "(" + getLeft().toString() + " | " + getRight().toString() + ")";
     }
 
     @Override
     public Expression nandify() {
         return new Nand(
                 new Nand(
-                        left.nandify(),
-                        left.nandify()),
+                        getLeft().nandify(),
+                        getLeft().nandify()),
                 new Nand(
-                        right.nandify(),
-                        right.nandify()));
+                        getRight().nandify(),
+                        getRight().nandify()));
     }
 
     @Override
     public Expression norify() {
         return new Nor(
                 new Nor(
-                        left.norify(),
-                        right.norify()),
+                        getLeft().norify(),
+                        getRight().norify()),
                 new Nor(
-                        left.norify(),
-                        right.norify()));
+                        getLeft().norify(),
+                        getRight().norify()));
     }
 
     @Override
     public Expression simplify() {
-        if (left.simplify().toString().equals("T") || right.simplify().toString().equals("T")) {
+        if (getLeft().simplify().toString().equals("T") || getRight().simplify().toString().equals("T")) {
             return new Val(true);
         }
-        if (left.simplify().toString().equals("F")) {
-            return right.simplify();
+        if (getLeft().simplify().toString().equals("F")) {
+            return getRight().simplify();
         }
-        if (right.simplify().toString().equals("F")) {
-            return left.simplify();
+        if (getRight().simplify().toString().equals("F")) {
+            return getLeft().simplify();
         }
-        if (left.simplify().toString().equals((right.simplify().toString()))) {
-            return left.simplify();
+        if (getLeft().simplify().toString().equals((getRight().simplify().toString()))) {
+            return getLeft().simplify();
         }
-        return new Or(left.simplify(), right.simplify());
+        return new Or(getLeft().simplify(), getRight().simplify());
     }
 }
